@@ -13,6 +13,8 @@ if os.path.isdir("/home/sebwild/Desktop/promise12_data"):
     HOST = "local"
 else:
     HOST = "google"
+    
+print("HOST = " + HOST)
 
 SINGLE_IMAGE_SIZE = [32, 128, 128] # D, H, W
 SUBSAMPLING = 2
