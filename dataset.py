@@ -43,7 +43,7 @@ class MR_Dataset(Dataset):
         self.single_image_size = params.SINGLE_IMAGE_SIZE
         
         if params.HOST == "local":
-            self.data_dir = r"./data/numpy_data"
+            self.data_dir = r"/home/sebwild/Desktop/promise12_data/numpy_data"
         else:
             self.data_dir = r"./promise12"
     

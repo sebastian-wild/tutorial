@@ -9,7 +9,7 @@ Created on Wed Jul  3 21:05:21 2019
 import os
 import sys
 
-if os.path.isdir("./data"):
+if os.path.isdir("/home/sebwild/Desktop/promise12_data"):
     HOST = "local"
 else:
     HOST = "google"
