@@ -102,8 +102,8 @@ for epoch in range(25):  # loop over the dataset multiple times
 
         train_loss.append(loss_train_tmp.item())
         
-        print('[%d] train loss: %.3f' %
-              (i + 1, train_loss.avrg))
+        #print('[%d] train loss: %.3f' %
+        #      (i + 1, train_loss.avrg))
 
     if torch.cuda.is_available():
         net.cuda()
@@ -119,6 +119,8 @@ for epoch in range(25):  # loop over the dataset multiple times
             outputs = net(inputs)
             loss_test_tmp = loss_fct(outputs, labels)
             test_loss.append(loss_test_tmp.item())
-        print("                      test loss: %.3f" % test_loss.avrg )
+        #print("                      test loss: %.3f" % test_loss.avrg )
+     
+    print("epoch " + str(epoch+1) + ": %.3f, %.3f" % (train_loss.avrg, test_loss.avrg))        
         
 print('Finished Training')
