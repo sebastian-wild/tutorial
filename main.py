@@ -77,7 +77,7 @@ loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:],
 
 
 ### TRAIN THE NETWORK
-for epoch in range(3):  # loop over the dataset multiple times
+for epoch in range(25):  # loop over the dataset multiple times
     net.train()
     train_loss = AverageMeter()
     print("Epoch " + str(epoch+1) + ": training on " + str(train_loader.__len__()) + " mini-batches.")
