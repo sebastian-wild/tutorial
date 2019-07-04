@@ -64,6 +64,8 @@ test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1,
 
 ### DEFINE NET ARCHITECTURE
 net = model.Net(n_channels_FirstLayer = params.N_CHANNELS_FIRST_LAYER)
+if torch.cuda.is_available():
+    net.cuda()
 if params.HOST == "local":
     summary(net, input_size=tuple([1] + list(np.array(params.SINGLE_IMAGE_SIZE)//params.SUBSAMPLING)))
 
@@ -84,6 +86,10 @@ for epoch in range(3):  # loop over the dataset multiple times
         # get the inputs; data is a list of [inputs, labels]
         inputs, labels = data
 
+        if torch.cuda.is_available():
+            inputs = inputs.cuda(non_blocking=True)
+            labels = labels.cuda(non_blocking=True)
+
         # forward + backward + optimize
         outputs = net(inputs)
         
@@ -98,12 +104,18 @@ for epoch in range(3):  # loop over the dataset multiple times
         
         print('[%d] train loss: %.3f' %
               (i + 1, train_loss.avrg))
-     
+
+    if torch.cuda.is_available():
+        net.cuda()
+        
     net.eval()
     test_loss = AverageMeter()
     with torch.no_grad():    
         for i, data in enumerate(test_loader, 0):
             inputs, labels = data
+            if torch.cuda.is_available():
+                inputs = inputs.cuda(non_blocking=True)
+                labels = labels.cuda(non_blocking=True)
             outputs = net(inputs)
             loss_test_tmp = loss_fct(outputs, labels)
             test_loss.append(loss_test_tmp.item())
