@@ -65,65 +65,67 @@ loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:],
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
 
-if not os.path.isdir("./last_epoch_results"):
-    os.makedirs("./last_epoch_results")
+if params.HOST == "google":
 
-### TRAIN THE NETWORK
-for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
-    net.train()
-    train_loss = AverageMeter()
-    for i, data in enumerate(train_loader, 0):
-        
-        # get the inputs; data is a list of [inputs, labels]
-        inputs, labels = data
-
-        if torch.cuda.is_available():
-            inputs = inputs.cuda(non_blocking=True)
-            labels = labels.cuda(non_blocking=True)
-
-        # forward + backward + optimize
-        outputs = net(inputs)
-        
-        loss_train_tmp = loss_fct(outputs, labels)
-        
+    if not os.path.isdir("./last_epoch_results"):
+        os.makedirs("./last_epoch_results")
     
-        optimizer.zero_grad()
-        loss_train_tmp.backward()
-        optimizer.step()
-
-        train_loss.append(loss_train_tmp.item())
-        
-
-    if torch.cuda.is_available():
-        net.cuda()
-        
-    net.eval()
-    test_loss = AverageMeter()
-    test_dice_score = AverageMeter()
-    
-
-    with torch.no_grad():    
-        for i, data in enumerate(test_loader, 0):
+    ### TRAIN THE NETWORK
+    for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
+        net.train()
+        train_loss = AverageMeter()
+        for i, data in enumerate(train_loader, 0):
+            
+            # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data
+    
             if torch.cuda.is_available():
                 inputs = inputs.cuda(non_blocking=True)
                 labels = labels.cuda(non_blocking=True)
+    
+            # forward + backward + optimize
             outputs = net(inputs)
-            loss_test_tmp = loss_fct(outputs, labels)
-            test_loss.append(loss_test_tmp.item())
             
-            if torch.cuda.is_available():
-                res = np.round(outputs[0,1,:,:,:].cpu().numpy()).astype(int)
-                test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].cpu().numpy()))
-            else:
-                res = np.round(outputs[0,1,:,:,:].numpy()).astype(int)
-                test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].numpy()))
+            loss_train_tmp = loss_fct(outputs, labels)
+            
         
-            if epoch == params.N_EPOCHS-1:
-                np.save("./last_epoch_results/test_" + str(i) + ".npy", res)
+            optimizer.zero_grad()
+            loss_train_tmp.backward()
+            optimizer.step()
+    
+            train_loss.append(loss_train_tmp.item())
+            
+    
+        if torch.cuda.is_available():
+            net.cuda()
+            
+        net.eval()
+        test_loss = AverageMeter()
+        test_dice_score = AverageMeter()
         
-    print("epoch " + str(epoch+1) + ": %.3f, %.3f, %.3f" % (train_loss.avrg, test_loss.avrg, test_dice_score.avrg))        
-        
+    
+        with torch.no_grad():    
+            for i, data in enumerate(test_loader, 0):
+                inputs, labels = data
+                if torch.cuda.is_available():
+                    inputs = inputs.cuda(non_blocking=True)
+                    labels = labels.cuda(non_blocking=True)
+                outputs = net(inputs)
+                loss_test_tmp = loss_fct(outputs, labels)
+                test_loss.append(loss_test_tmp.item())
+                
+                if torch.cuda.is_available():
+                    res = np.round(outputs[0,1,:,:,:].cpu().numpy()).astype(int)
+                    test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].cpu().numpy()))
+                else:
+                    res = np.round(outputs[0,1,:,:,:].numpy()).astype(int)
+                    test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].numpy()))
+            
+                if epoch == params.N_EPOCHS-1:
+                    np.save("./last_epoch_results/test_" + str(i) + ".npy", res)
+            
+        print("epoch " + str(epoch+1) + ": %.3f, %.3f, %.3f" % (train_loss.avrg, test_loss.avrg, test_dice_score.avrg))        
+            
     
     
     
