@@ -38,8 +38,9 @@ def dice_loss(outputs, labels, power = 2, eps = 1e-7):
     denom = torch.sum(torch.pow(outputs[:,1,:,:,:], power) + label_float, dim = [1,2,3])
     return 1 - torch.mean(num/(denom + eps))
     
-
-
+ 
+def dice_score(res_bitmask, labels):
+    return 2*np.sum(res_bitmask*labels)/(np.sum(res_bitmask) + np.sum(labels))
 
 def cross_entropy_custom(outputs, labels):
     labels_float = labels.to(outputs.dtype)
