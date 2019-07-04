@@ -26,11 +26,6 @@ import params
 from utilities import AverageMeter
 import losses
 
-''' 
-TO DO:
-    
-    toGPU stuff in case we are on google
-'''
 
 
 # set random seed
@@ -43,13 +38,7 @@ if torch.cuda.is_available():
 else:
 	os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 torch.backends.cudnn.benchmark = True
-
-
-
-    
 print("Running on HOST = " + params.HOST)
-
-
 
 ### DEFINE DATASETS AND DATA LOADERS 
 dataset_generator = dataset.MR_Dataset_Generator(n_splits = 5, i_split = 0)
@@ -59,7 +48,7 @@ test_dataset = dataset_generator.getTestDataset(train_dataset.img_mean, train_da
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=params.BATCH_SIZE,
                                           shuffle=True, num_workers=2)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1,
-                                          shuffle=False, num_workers=2)
+                                          shuffle=False, num_workers=1)
 
 
 ### DEFINE NET ARCHITECTURE
