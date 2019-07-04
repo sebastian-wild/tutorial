@@ -118,10 +118,15 @@ for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
                 inputs = inputs.cuda(non_blocking=True)
                 labels = labels.cuda(non_blocking=True)
             outputs = net(inputs)
-            res = np.round(outputs[0,1,:,:,:].numpy()).astype(int)
             loss_test_tmp = loss_fct(outputs, labels)
             test_loss.append(loss_test_tmp.item())
-            test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].numpy()))
+            
+            if torch.cuda.is_available():
+                res = np.round(outputs[0,1,:,:,:].cpu().numpy()).astype(int)
+                test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].cpu().numpy()))
+            else:
+                res = np.round(outputs[0,1,:,:,:].numpy()).astype(int)
+                test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].numpy()))
             
         #print("                      test loss: %.3f" % test_loss.avrg )
      
