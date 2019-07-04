@@ -71,13 +71,13 @@ if params.HOST == "local":
 
 
 ### DEFINING THE LOSS FUNCTION AND OPTIMIZER
-optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
+optimizer = optim.SGD(net.parameters(), lr=params.LR_START, momentum=0.9)
 loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:], power = params.DICE_POWER)
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
 
 ### TRAIN THE NETWORK
-for epoch in range(25):  # loop over the dataset multiple times
+for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
     net.train()
     train_loss = AverageMeter()
     for i, data in enumerate(train_loader, 0):
