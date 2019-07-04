@@ -80,7 +80,6 @@ loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:],
 for epoch in range(25):  # loop over the dataset multiple times
     net.train()
     train_loss = AverageMeter()
-    print("Epoch " + str(epoch+1) + ": training on " + str(train_loader.__len__()) + " mini-batches.")
     for i, data in enumerate(train_loader, 0):
         
         # get the inputs; data is a list of [inputs, labels]
