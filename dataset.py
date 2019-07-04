@@ -45,7 +45,7 @@ class MR_Dataset(Dataset):
         if params.HOST == "local":
             self.data_dir = r"/home/sebwild/Desktop/promise12_data/numpy_data"
         else:
-            self.data_dir = r"./promise12"
+            self.data_dir = r"/content/promise12"
     
         self.img = np.zeros([self.n_images, 1] + self.single_image_size, dtype = 'int16')
         self.label = np.zeros([self.n_images, 1] + self.single_image_size, dtype = 'int8')
