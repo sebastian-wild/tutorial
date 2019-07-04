@@ -76,6 +76,9 @@ loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:],
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
 
+if not os.path.isdir("./last_epoch_results"):
+    os.makedirs("./last_epoch_results")
+
 ### TRAIN THE NETWORK
 for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
     net.train()
@@ -101,8 +104,6 @@ for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
 
         train_loss.append(loss_train_tmp.item())
         
-        #print('[%d] train loss: %.3f' %
-        #      (i + 1, train_loss.avrg))
 
     if torch.cuda.is_available():
         net.cuda()
@@ -111,6 +112,7 @@ for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
     test_loss = AverageMeter()
     test_dice_score = AverageMeter()
     
+
     with torch.no_grad():    
         for i, data in enumerate(test_loader, 0):
             inputs, labels = data
@@ -127,9 +129,13 @@ for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
             else:
                 res = np.round(outputs[0,1,:,:,:].numpy()).astype(int)
                 test_dice_score.append(losses.dice_score(res, labels[0,0,:,:,:].numpy()))
-            
-        #print("                      test loss: %.3f" % test_loss.avrg )
-     
+        
+            if epoch == params.N_EPOCHS-1:
+                np.save("./last_epoch_results/test_" + str(i) + ".npy", res)
+        
     print("epoch " + str(epoch+1) + ": %.3f, %.3f, %.3f" % (train_loss.avrg, test_loss.avrg, test_dice_score.avrg))        
         
+    
+    
+    
 print('Finished Training')
