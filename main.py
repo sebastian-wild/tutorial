@@ -71,7 +71,7 @@ if params.HOST == "local":
 
 
 ### DEFINING THE LOSS FUNCTION AND OPTIMIZER
-optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.95)
+optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:], power = params.DICE_POWER)
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
