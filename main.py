@@ -62,7 +62,7 @@ loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:],
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
 
-scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[3,5,8], gamma=0.2)
+scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[25,35], gamma=0.3)
 
 if True:
 #if params.HOST == "google":

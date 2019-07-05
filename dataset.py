@@ -38,22 +38,28 @@ class augment(object):
         self.img = copy.deepcopy(self.img_input) # (1, D, H, W)
         self.label = copy.deepcopy(self.label_input) # (1, D, H, W)
         
-        r = np.random.randint(2)
+        r = np.random.randint(3)
         if r == 0:
             self.shift()
+        elif r == 1:
+            self.rotate()
         else:
             pass
 
-    def shift(self, offset_max = [2,12,12]):
+
+
+    def shift(self, offset_max = [2,10,10]):
         
         offset = [np.random.randint(2*offset_max[0]+1) - offset_max[0], \
                      np.random.randint(2*offset_max[1]+1) - offset_max[1],\
                      np.random.randint(2*offset_max[2]+1) - offset_max[2]]
-    
-    
         self.img = ndimage.interpolation.shift(self.img, (0, int(offset[0]), int(offset[1]), int(offset[2])), mode='reflect')
         self.label = ndimage.interpolation.shift(self.label, (0, int(offset[0]), int(offset[1]), int(offset[2])), mode='reflect')
             
+    def rotate(self, rot_deg_max = 20):
+        rot_deg = 2*np.random.rand()*rot_deg_max - rot_deg_max
+        self.img = ndimage.interpolation.rotate(self.img, rot_deg, axes=(3, 2), mode = "reflect")
+        self.label = ndimage.interpolation.rotate(self.label, rot_deg, axes=(3, 2), mode = "reflect")
 
 class MR_Dataset(Dataset):
     def __init__(self, indices, normalize = "auto", normalize_mean = None, normalize_std = None, augment = False):
