@@ -64,7 +64,7 @@ optimizer = optim.SGD(net.parameters(), lr=params.LR_START, momentum=0.9)
 loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:], power = params.DICE_POWER)
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
-
+#if True:
 if params.HOST == "google":
 
     if not os.path.isdir("./last_epoch_results"):
