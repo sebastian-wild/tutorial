@@ -24,21 +24,36 @@ from torchsummary import summary
 import glob
 import model
 import params
+import copy
 
 from scipy import ndimage
 
 # set random seed
-random.seed(2050)
-np.random.seed(2050)
-torch.manual_seed(2050)
-torch.cuda.manual_seed_all(2050)
 
 class augment(object):
     def __init__(self, img_input, label_input):
         self.img_input = img_input
         self.label_input = label_input
         
-        print(self.img_input.shape)
+        self.img = copy.deepcopy(self.img_input) # (1, D, H, W)
+        self.label = copy.deepcopy(self.label_input) # (1, D, H, W)
+        
+        r = np.random.randint(2)
+        if r == 0:
+            self.shift()
+        else:
+            pass
+
+    def shift(self, offset_max = [2,12,12]):
+        
+        offset = [np.random.randint(2*offset_max[0]+1) - offset_max[0], \
+                     np.random.randint(2*offset_max[1]+1) - offset_max[1],\
+                     np.random.randint(2*offset_max[2]+1) - offset_max[2]]
+    
+    
+        self.img = ndimage.interpolation.shift(self.img, (0, int(offset[0]), int(offset[1]), int(offset[2])), mode='reflect')
+        self.label = ndimage.interpolation.shift(self.label, (0, int(offset[0]), int(offset[1]), int(offset[2])), mode='reflect')
+            
 
 class MR_Dataset(Dataset):
     def __init__(self, indices, normalize = "auto", normalize_mean = None, normalize_std = None, augment = False):
@@ -98,7 +113,7 @@ class MR_Dataset(Dataset):
             return (torch.from_numpy(self.img[i, ...]), torch.from_numpy(self.label[i]))
         else:
             aug = augment(self.img[i, ...], self.label[i])
-            return (self.img[i, ...], self.label[i])
+            return (torch.from_numpy(aug.img), torch.from_numpy(aug.label))
 
 class MR_Dataset_Generator(object):
     def __init__(self, n_splits = 5, i_split = 0):

@@ -29,10 +29,6 @@ import losses
 
 
 # set random seed
-random.seed(2050)
-np.random.seed(2050)
-torch.manual_seed(2050)
-torch.cuda.manual_seed_all(2050)
 if torch.cuda.is_available():
 	os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 else:
@@ -42,7 +38,7 @@ print("Running on HOST = " + params.HOST)
 
 ### DEFINE DATASETS AND DATA LOADERS 
 dataset_generator = dataset.MR_Dataset_Generator(n_splits = 5, i_split = 0)
-train_dataset = dataset_generator.getTrainDataset()
+train_dataset = dataset_generator.getTrainDataset(augment = True)
 test_dataset = dataset_generator.getTestDataset(train_dataset.img_mean, train_dataset.img_std)
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=params.BATCH_SIZE,
@@ -64,8 +60,8 @@ optimizer = optim.SGD(net.parameters(), lr=params.LR_START, momentum=0.9)
 loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:], power = params.DICE_POWER)
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
-#if True:
-if params.HOST == "google":
+if True:
+#if params.HOST == "google":
 
     if not os.path.isdir("./last_epoch_results"):
         os.makedirs("./last_epoch_results")

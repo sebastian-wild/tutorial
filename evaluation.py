@@ -36,10 +36,6 @@ from matplotlib import pyplot as plt
 
 
 # set random seed
-random.seed(2050)
-np.random.seed(2050)
-torch.manual_seed(2050)
-torch.cuda.manual_seed_all(2050)
 
 ### IMPORT RESULTS
 res_dir = "/home/sebwild/Desktop/promise_results"
