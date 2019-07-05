@@ -23,8 +23,9 @@ from torchsummary import summary
 import model
 import dataset
 import params
-from utilities import AverageMeter
+from utilities import AverageMeter, get_learning_rate
 import losses
+from torch.optim import lr_scheduler
 
 
 
@@ -60,6 +61,9 @@ optimizer = optim.SGD(net.parameters(), lr=params.LR_START, momentum=0.9)
 loss_fct = lambda outputs, labels : losses.dice_loss(outputs, labels[:,0,:,:,:], power = params.DICE_POWER)
 #loss_fct = lambda outputs, labels : losses.cross_entropy_custom(outputs, labels[:,0,:,:,:])
 
+
+scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[3,5,8], gamma=0.2)
+
 if True:
 #if params.HOST == "google":
 
@@ -68,6 +72,9 @@ if True:
     
     ### TRAIN THE NETWORK
     for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
+        scheduler.step(epoch)
+        lr = get_learning_rate(optimizer)
+        print("lr = ", lr)
         net.train()
         train_loss = AverageMeter()
         for i, data in enumerate(train_loader, 0):
