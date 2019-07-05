@@ -38,14 +38,15 @@ class augment(object):
         self.img = copy.deepcopy(self.img_input) # (1, D, H, W)
         self.label = copy.deepcopy(self.label_input) # (1, D, H, W)
         
-        r = np.random.randint(3)
-        if r == 0:
-            self.shift()
-        elif r == 1:
-            self.rotate()
-        else:
-            pass
+#        r = np.random.randint(3)
+#        if r == 0:
+#            self.shift()
+#        elif r == 1:
+#            self.rotate()
+#        else:
+#            pass
 
+        self.rotate()
 
 
     def shift(self, offset_max = [2,10,10]):
@@ -58,8 +59,8 @@ class augment(object):
             
     def rotate(self, rot_deg_max = 20):
         rot_deg = 2*np.random.rand()*rot_deg_max - rot_deg_max
-        self.img = ndimage.interpolation.rotate(self.img, rot_deg, axes=(3, 2), mode = "reflect")
-        self.label = ndimage.interpolation.rotate(self.label, rot_deg, axes=(3, 2), mode = "reflect")
+        self.img = ndimage.interpolation.rotate(self.img, rot_deg, axes=(3, 2), mode = "reflect", reshape = False)
+        self.label = ndimage.interpolation.rotate(self.label, rot_deg, axes=(3, 2), mode = "reflect", reshape = False)
 
 class MR_Dataset(Dataset):
     def __init__(self, indices, normalize = "auto", normalize_mean = None, normalize_std = None, augment = False):
@@ -155,6 +156,9 @@ def plot_slice(dataset, image_id, slice_index = 15):
     img = img.numpy()[0,slice_index,:,:]
     label = label.numpy()[0,slice_index,:,:]
     
+    print(img.shape)
+    print(label.shape)
+    
     color_scale = [1.0, 0.0, 0.0]
     image_plot = np.zeros((img.shape[0], img.shape[1], 3))
     for i in range(3):
@@ -166,7 +170,7 @@ def plot_slice(dataset, image_id, slice_index = 15):
 
 
 
-
+#
 #dataset_generator = MR_Dataset_Generator(n_splits = 5, i_split = 0)
 #train_dataset = dataset_generator.getTrainDataset()
 #train_dataset_augment = dataset_generator.getTrainDataset(augment = True)
