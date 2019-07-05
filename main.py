@@ -74,7 +74,7 @@ if True:
     for epoch in range(params.N_EPOCHS):  # loop over the dataset multiple times
         scheduler.step(epoch)
         lr = get_learning_rate(optimizer)
-        print("lr = ", lr)
+        #print("lr = ", lr)
         net.train()
         train_loss = AverageMeter()
         for i, data in enumerate(train_loader, 0):
