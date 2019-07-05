@@ -38,15 +38,13 @@ class augment(object):
         self.img = copy.deepcopy(self.img_input) # (1, D, H, W)
         self.label = copy.deepcopy(self.label_input) # (1, D, H, W)
         
-#        r = np.random.randint(3)
-#        if r == 0:
-#            self.shift()
-#        elif r == 1:
-#            self.rotate()
-#        else:
-#            pass
-
-        self.rotate()
+        r = np.random.randint(3)
+        if r == 0:
+            self.shift()
+        elif r == 1:
+            self.rotate()
+        else:
+            pass
 
 
     def shift(self, offset_max = [2,10,10]):
